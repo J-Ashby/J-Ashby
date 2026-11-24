@@ -4,6 +4,23 @@ A real-time sound level meter using ESP32, MAX4466 microphone amplifier, and a 1
 
 ![dB Meter](https://img.shields.io/badge/ESP32-Sound%20Meter-blue)
 
+## 🎯 Two Build Options Available!
+
+This project supports two hardware configurations:
+
+### Option 1: ESP32 + MAX4466 (Original)
+- Standard ESP32 dev board
+- External MAX4466 microphone module
+- 11 wire connections
+- **See main instructions below**
+
+### Option 2: XIAO ESP32-S3 Sense ⭐ RECOMMENDED
+- Ultra-compact all-in-one board
+- **Built-in digital microphone** (no external module!)
+- Only 8 wire connections
+- Smaller, cleaner build
+- **See [README_XIAO_S3.md](README_XIAO_S3.md) for this version**
+
 ## Features
 
 - **Real-time dB measurement** using MAX4466 electret microphone
