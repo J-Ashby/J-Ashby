@@ -1,0 +1,170 @@
+ESP32 dB METER - CONNECTION SCHEMATIC
+=====================================
+
+                                    ┌─────────────────────────┐
+                                    │                         │
+                                    │   ESP32 Development     │
+                                    │        Board            │
+                                    │                         │
+    ┌─────────────────┐             │                         │
+    │                 │             │                         │
+    │   MAX4466       │             │                         │
+    │   Microphone    │             │                         │
+    │   Amplifier     │             │                         │
+    │                 │             │                         │
+    │   ┌───┐         │             │                         │
+    │   │MIC│ ◄───────┼─Sound       │                         │
+    │   └───┘         │             │                         │
+    │                 │             │                         │
+    │  VCC ───────────┼─────────────┤ 3.3V                   │
+    │  GND ───────────┼─────────────┤ GND                    │
+    │  OUT ───────────┼─────────────┤ GPIO34 (ADC1_CH6)      │
+    │                 │             │                         │
+    │  [GAIN POT]     │             │                         │
+    └─────────────────┘             │                         │
+                                    │                         │
+                                    │                         │
+    ┌─────────────────┐             │                         │
+    │                 │             │                         │
+    │  GC9A01 1.28"   │             │                         │
+    │  Round Display  │             │                         │
+    │   (240x240)     │             │                         │
+    │                 │             │                         │
+    │  ┌─────────┐    │             │                         │
+    │  │ Needle  │    │             │                         │
+    │  │  Gauge  │    │             │                         │
+    │  │ Display │    │             │                         │
+    │  └─────────┘    │             │                         │
+    │                 │             │                         │
+    │  VCC ───────────┼─────────────┤ 3.3V / 5V*            │
+    │  GND ───────────┼─────────────┤ GND                    │
+    │  SCL ───────────┼─────────────┤ GPIO18 (SPI CLK)       │
+    │  SDA ───────────┼─────────────┤ GPIO23 (SPI MOSI)      │
+    │  RES ───────────┼─────────────┤ GPIO4  (RESET)         │
+    │  DC  ───────────┼─────────────┤ GPIO2  (Data/Command)  │
+    │  CS  ───────────┼─────────────┤ GPIO15 (Chip Select)   │
+    │  BL  ───────────┼─────────────┤ GPIO27 (Backlight)     │
+    └─────────────────┘             │                         │
+                                    │                         │
+                                    │  USB ◄───── Computer    │
+                                    │                         │
+                                    └─────────────────────────┘
+
+POWER SUPPLY
+============
+                     ┌──────┐
+    Computer USB ────┤ 5V   ├──── ESP32 USB Port
+    (or 5V adapter)  └──────┘
+
+
+DETAILED PIN CONNECTIONS
+=========================
+
+MAX4466 → ESP32
+---------------
+  VCC  ───→  3.3V
+  GND  ───→  GND
+  OUT  ───→  GPIO34 (ADC1_CH6, input only)
+
+Display → ESP32
+---------------
+  VCC  ───→  3.3V or 5V (check your display datasheet)*
+  GND  ───→  GND
+  SCL  ───→  GPIO18 (VSPI CLK)
+  SDA  ───→  GPIO23 (VSPI MOSI)
+  RES  ───→  GPIO4
+  DC   ───→  GPIO2
+  CS   ───→  GPIO15 (VSPI CS)
+  BL   ───→  GPIO27
+
+
+PIN USAGE SUMMARY
+=================
+
+ESP32 GPIO | Function      | Connected To
+-----------|---------------|------------------
+GPIO34     | ADC Input     | MAX4466 OUT
+GPIO18     | SPI CLK       | Display SCL
+GPIO23     | SPI MOSI      | Display SDA
+GPIO15     | SPI CS        | Display CS
+GPIO2      | GPIO Out      | Display DC
+GPIO4      | GPIO Out      | Display RES
+GPIO27     | GPIO Out      | Display BL
+3.3V       | Power         | MAX4466 VCC, Display VCC*
+GND        | Ground        | All GND pins
+
+
+NOTES
+=====
+1. * Display VCC: Check your specific display module
+   - Most 1.28" GC9A01 displays: 3.3V
+   - Some modules have onboard regulator: 5V OK
+   - If unsure, start with 3.3V
+
+2. GPIO34 is INPUT ONLY - perfect for ADC, cannot be output
+
+3. The MAX4466 gain adjustment potentiometer:
+   - Located on back of module
+   - Clockwise = more gain (up to 125x)
+   - Counter-clockwise = less gain (down to 25x)
+   - Start at middle position
+
+4. SPI Pins are shared for display communication:
+   - VSPI (default) is used
+   - MISO not needed (display is output only)
+
+5. Power consumption:
+   - ESP32: ~80-160mA (WiFi off)
+   - Display: ~40-100mA (depends on brightness)
+   - MAX4466: ~3mA
+   - Total: ~200-300mA typical
+   - Use quality USB cable and 1A+ power supply
+
+6. For breadboard prototyping:
+   - Keep wires short (especially SPI lines)
+   - Use solid core wire for reliability
+   - Double-check all connections
+
+7. Optional improvements:
+   - Add 0.1µF capacitor across display power pins
+   - Add 10µF capacitor across ESP32 power pins
+   - Keeps display stable, reduces noise
+
+
+ALTERNATIVE PINS
+================
+
+If the default pins don't work for your board:
+
+ADC Pin Options (for MAX4466):
+  - GPIO32, GPIO33, GPIO34, GPIO35, GPIO36, GPIO39
+  - Must use ADC1 channel (not ADC2 if using WiFi)
+
+SPI Pin Options (for Display):
+  - Can use HSPI instead of VSPI
+  - Modify platformio.ini build_flags accordingly
+
+
+TROUBLESHOOTING CONNECTIONS
+============================
+
+No Display:
+  → Check VCC (try 3.3V then 5V if safe)
+  → Verify CS, DC, RST connections
+  → Test with known-good display
+
+No Mic Reading:
+  → Verify GPIO34 connection
+  → Check MAX4466 VCC/GND
+  → Adjust gain potentiometer
+  → View Serial Monitor output
+
+Erratic Display:
+  → Shorten SPI wires
+  → Add decoupling capacitors
+  → Check power supply quality
+
+Serial Output Always Zero:
+  → GPIO34 may be shorted to GND
+  → MAX4466 may be unpowered
+  → Check ADC code initialization
