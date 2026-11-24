@@ -50,11 +50,20 @@ ESP32 dB METER - CONNECTION SCHEMATIC
                                     │                         │
                                     └─────────────────────────┘
 
-POWER SUPPLY
-============
+POWER SUPPLY (USB POWERED)
+==========================
                      ┌──────┐
     Computer USB ────┤ 5V   ├──── ESP32 USB Port
-    (or 5V adapter)  └──────┘
+    Wall Adapter ────┤      │     (Micro-USB or USB-C)
+    Power Bank   ────┤      │
+                     └──────┘
+    
+    USB provides 5V → ESP32 regulates to 3.3V
+    Total current: ~200-300mA (well within USB specs)
+    
+    ✓ No external power supply needed!
+    ✓ Portable with USB power bank
+    ✓ Powers ESP32, Display, and Microphone
 
 
 DETAILED PIN CONNECTIONS

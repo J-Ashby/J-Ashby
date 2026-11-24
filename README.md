@@ -22,7 +22,8 @@ A real-time sound level meter using ESP32, MAX4466 microphone amplifier, and a 1
 - **MAX4466 Electret Microphone Amplifier Module**
 - **1.28" Round TFT Display** with GC9A01 driver (240x240)
 - Breadboard and jumper wires
-- USB cable for programming and power
+- **USB cable** (Micro-USB or USB-C) - for programming AND power
+- USB power source (computer, wall adapter, or power bank)
 
 ## Software Requirements
 
@@ -47,6 +48,7 @@ Follow the wiring guide in [WIRING.md](WIRING.md)
 **Quick Reference:**
 - MAX4466 OUT → GPIO34
 - Display connections → See WIRING.md for full pinout
+- **Power:** Just plug USB cable into ESP32 - see [USB_POWER.md](USB_POWER.md)
 
 ### 3. Upload Code
 
@@ -177,8 +179,11 @@ esp32-db-meter/
 ├── platformio.ini      # PlatformIO configuration
 ├── src/
 │   └── main.cpp        # Main application code
+├── README.md           # This file
 ├── WIRING.md           # Detailed wiring guide
-└── README.md           # This file
+├── USB_POWER.md        # USB power guide (desktop/portable/wall)
+├── CALIBRATION.md      # Step-by-step calibration
+└── SCHEMATIC.txt       # ASCII connection diagram
 ```
 
 ## Future Enhancements

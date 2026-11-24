@@ -60,9 +60,19 @@ The MAX4466 has a potentiometer on the back for gain adjustment:
 
 ## Power Requirements
 
-- ESP32: Typically powered via USB (5V)
-- Total current draw: ~200-300mA (ESP32 + display + mic)
-- Use a quality USB cable and power supply for stable operation
+**Primary Power: USB (Recommended)**
+- Power via ESP32's micro-USB or USB-C port
+- USB provides 5V, ESP32 regulates to 3.3V internally
+- Total current draw: ~200-300mA (well within USB limits)
+- Use a quality USB cable to avoid voltage drops
+
+**USB Power Sources:**
+- Computer USB port (5V @ 500mA+) ✓
+- USB wall adapter/charger (5V @ 1A+) ✓
+- USB power bank (portable operation) ✓
+- Phone charger (5V output) ✓
+
+**Note:** The device is completely powered through the ESP32's USB port - no external power supply needed!
 
 ## Calibration
 
